@@ -16,10 +16,11 @@ jobs:
     name: Setup AWS Infrastructure
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout /cdk directory
         uses: actions/checkout@v4
         with:
             sparse-checkout: cdk
             sparse-checkout-cone-mode: false
       - run: ls -la
-      - run: ls -la ${{ github.workspace }}
+      - run: ls -la
+        working-directory: cdk
