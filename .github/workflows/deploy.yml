@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+    push:
+        branches:
+        - main
+
+concurrency: 
+    group: deploy-${{ github.head_ref }}
+    cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+            sparse-checkout: cdk
+      - run: ls -la
+      - run: ls -la ${{ github.workspace }}
