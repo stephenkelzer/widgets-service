@@ -38,7 +38,7 @@ jobs:
         needs: changes
         if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'cdk') }}
         steps:
-        -   uses: ./.github/checkout-project-directory@$GITHUB_SHA
+        -   uses: ./.github/checkout-project-directory@${{ GITHUB_SHA }}
             with:
                 project-directory: cdk
         -   name: Checkout /cdk directory
