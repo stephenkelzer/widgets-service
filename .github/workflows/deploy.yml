@@ -43,12 +43,11 @@ jobs:
             with:
                 sparse-checkout: cdk
                 sparse-checkout-cone-mode: false
-                # path: ../..
-        -   run: ls -la
+        -   run: ls -laR
         -   name: Collapse Parent Directory
-            run: mv cdk/* . && rmdir cdk
-        -   run: ls -la
-        -   run: ls -la
+            run: mv cdk/**/* . && rmdir cdk
+        -   run: ls -laR
+        -   run: ls -laR
             working-directory: ./cdk
     doodads:
         name: Deploy Doodads
