@@ -42,8 +42,8 @@ jobs:
             uses: actions/checkout@v4
             with:
                 sparse-checkout: cdk
-                sparse-checkout-cone-mode: false
-                path: cdk/..
+                # sparse-checkout-cone-mode: false
+                # path: cdk/..
         -   run: ls -la
         -   run: ls -la
             working-directory: ./cdk
