@@ -18,13 +18,19 @@ jobs:
         outputs:
             packages: ${{ steps.filter.outputs.changes }}
         steps:
+        -   uses: actions/checkout@v3
         -   uses: dorny/paths-filter@v2
             id: filter
             with:
                 filters: |
-                    cdk: cdk
-                    doodads: doodads
-                    widgets: widgets
+                  cdk:
+                    - 'cdk/**'
+                  doodads:
+                    - 'doodads/**'
+                  widgets:
+                    - 'widgets/**'
+        
+        
     infra:
         name: Setup AWS Infrastructure
         runs-on: ubuntu-latest
