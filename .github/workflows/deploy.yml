@@ -27,18 +27,16 @@ jobs:
             with:
                 filters: |
                   cdk:
-                    - 'cdk/**'
+                    - cdk/**
                   doodads:
-                    - 'doodads/**'
+                    - doodads/**
                   widgets:
-                    - 'widgets/**'
-        
-        
+                    - widgets/**
     infra:
         name: Setup AWS Infrastructure
         runs-on: ubuntu-latest
         needs: changes
-        if: ${{ !cancelled() && contains(needs.changes.outputs, 'cdk') }}
+        if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'cdk') }}
         steps:
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
@@ -52,7 +50,7 @@ jobs:
         name: Deploy Doodads
         runs-on: ubuntu-latest
         needs: [changes, infra]
-        if: ${{ !cancelled() && contains(needs.changes.outputs, 'doodads') }}
+        if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'doodads') }}
         steps:
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
@@ -66,7 +64,7 @@ jobs:
         name: Deploy Widgets
         runs-on: ubuntu-latest
         needs: [changes, infra]
-        if: ${{ !cancelled() && contains(needs.changes.outputs, 'widgets') }}
+        if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'widgets') }}
         steps:
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
