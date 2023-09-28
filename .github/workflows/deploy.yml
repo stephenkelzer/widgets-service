@@ -42,9 +42,15 @@ jobs:
             uses: actions/checkout@v4
             with:
                 sparse-checkout: cdk
-                # sparse-checkout-cone-mode: false
-                # path: cdk/..
+                sparse-checkout-cone-mode: false
+                path: cdk/../..
         -   run: ls -la
+        -   name: copy file
+            uses: canastro/copy-file-action@master
+            with:
+                source: cdk/.
+                target: /.
+                flags: '-r'
         -   run: ls -la
             working-directory: ./cdk
     doodads:
