@@ -6,8 +6,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo ${{ inputs.project-directory }}
-      shell: bash
+    -   run: echo ${{ inputs.project-directory }}
+        shell: bash
     -   name: Checkout ${{ inputs.project-directory }} directory
         uses: actions/checkout@v4
         with:
@@ -15,3 +15,4 @@ runs:
             sparse-checkout-cone-mode: false
     -   name: Collapse Parent Directory
         run: rsync --remove-source-files -rP ${{ github.workspace }}/${{ inputs.project-directory }}/ ${{ github.workspace }}/ && rmdir ${{ inputs.project-directory }}
+        shell: bash
