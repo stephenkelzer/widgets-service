@@ -47,7 +47,7 @@ jobs:
         -   run: echo ${{ github.workspace }}
         -   name: Collapse Parent Directory
                # rsync --remove-source-files -rP ../b/c/ ../b/
-            run: rsync --remove-source-files -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/
+            run: rsync -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/
         -   run: ls -la
         -   run: ls -laR
             working-directory: ./cdk
