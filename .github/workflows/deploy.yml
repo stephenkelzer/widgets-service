@@ -22,9 +22,9 @@ jobs:
             id: filter
             with:
                 filters: |
-                    cdk: cdk/**
-                    doodads: doodads/**
-                    widgets: widgets/**
+                    cdk: cdk
+                    doodads: doodads
+                    widgets: widgets
     infra:
         name: Setup AWS Infrastructure
         runs-on: ubuntu-latest
