@@ -9,7 +9,8 @@ concurrency:
     group: transmit-repo-dispatch-event-${{ github.head_ref }}
     cancel-in-progress: true
 
-permissions: read-all
+permissions:
+    contents: write
 
 jobs:
     transmit-repo-dispatch-event:
