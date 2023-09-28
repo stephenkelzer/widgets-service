@@ -46,8 +46,7 @@ jobs:
                 # path: ../..
         -   run: ls -la
         -   name: Collapse Parent Directory
-            run: mv * ..
-            working-directory: ./cdk
+            run: mv cdk/* . && rmdir cdk
         -   run: ls -la
         -   run: ls -la
             working-directory: ./cdk
