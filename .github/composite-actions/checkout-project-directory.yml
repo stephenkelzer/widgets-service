@@ -1,0 +1,9 @@
+name: Checkout Project Directory (${{ input.project-directory }})
+inputs:
+  project-directory:
+    description: 'The repo directory of the project to checkout'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: echo ${{ inputs.project-directory }}.

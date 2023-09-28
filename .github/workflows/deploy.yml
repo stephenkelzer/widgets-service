@@ -38,6 +38,9 @@ jobs:
         needs: changes
         if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'cdk') }}
         steps:
+        -   uses: ./.github/composite-actions/checkout-project-directory
+            with:
+                project-directory: cdk
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
             with:
@@ -45,9 +48,6 @@ jobs:
                 sparse-checkout-cone-mode: false
         -   name: Collapse Parent Directory
             run: rsync --remove-source-files -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/ && rmdir cdk
-        -   name: Log Directory Contents (debug)
-            if: ${{ runner.debug == '1' }}
-            run: ls -la
     doodads:
         name: Deploy Doodads
         runs-on: ubuntu-latest
