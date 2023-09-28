@@ -43,16 +43,12 @@ jobs:
             with:
                 sparse-checkout: .github
                 sparse-checkout-cone-mode: false
-        -   uses: ./.github/checkout-project-directory
+        -   name: Checkout cdk directory
+            uses: ./.github/checkout-project-directory
             with:
                 project-directory: cdk
-        -   name: Checkout /cdk directory
-            uses: actions/checkout@v4
-            with:
-                sparse-checkout: cdk
-                sparse-checkout-cone-mode: false
-        -   name: Collapse Parent Directory
-            run: rsync --remove-source-files -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/ && rmdir cdk
+        -   name: DEBUG
+            run: ls -la
     doodads:
         name: Deploy Doodads
         runs-on: ubuntu-latest
