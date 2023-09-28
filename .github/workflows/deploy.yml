@@ -38,6 +38,11 @@ jobs:
         needs: changes
         if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'cdk') }}
         steps:
+        -   name: Checkout /.github directory
+            uses: actions/checkout@v3
+            with:
+                sparse-checkout: .github
+                sparse-checkout-cone-mode: false
         -   uses: ./.github/checkout-project-directory
             with:
                 project-directory: cdk
