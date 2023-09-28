@@ -45,12 +45,9 @@ jobs:
                 sparse-checkout-cone-mode: false
                 # path: ../..
         -   run: ls -la
-        -   name: copy file
-            uses: canastro/copy-file-action@master
-            with:
-                source: cdk/.
-                target: /.
-                flags: '-r'
+        -   name: Collapse Parent Directory
+            run: mv cdk/* ..
+        -   run: ls -la
         -   run: ls -la
             working-directory: ./cdk
     doodads:
