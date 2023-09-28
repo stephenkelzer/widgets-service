@@ -12,15 +12,59 @@ concurrency:
 permissions: read-all
 
 jobs:
-  infra:
-    name: Setup AWS Infrastructure
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout /cdk directory
-        uses: actions/checkout@v4
-        with:
-            sparse-checkout: cdk
-            sparse-checkout-cone-mode: false
-      - run: ls -la
-      - run: ls -la
-        working-directory: cdk
+    changes:
+        name: Check Changes
+        runs-on: ubuntu-latest
+        outputs:
+            packages: ${{ steps.filter.outputs.changes }}
+        steps:
+        -   uses: dorny/paths-filter@v2
+            id: filter
+            with:
+                filters: |
+                    cdk:        cdk/**
+                    doodads:    doodads/**
+                    widgets:    widgets/**
+    infra:
+        name: Setup AWS Infrastructure
+        runs-on: ubuntu-latest
+        needs: changes
+        if: !cancelled() && needs.changes.outputs.packages.cdk == 'true'
+        steps:
+        -   name: Checkout /cdk directory
+            uses: actions/checkout@v4
+            with:
+                sparse-checkout: ./cdk
+                sparse-checkout-cone-mode: false
+        -   run: ls -la
+        -   run: ls -la
+            working-directory: ./cdk
+    doodads:
+        name: Deploy Doodads
+        runs-on: ubuntu-latest
+        needs: [changes, infra]
+        if: !cancelled() && needs.changes.outputs.packages.doodads == 'true'
+        steps:
+        -   name: Checkout /cdk directory
+            uses: actions/checkout@v4
+            with:
+                sparse-checkout: ./doodads
+                sparse-checkout-cone-mode: false
+        -   run: ls -la
+        -   run: ls -la
+            working-directory: ./doodads
+    widgets:
+        name: Deploy Widgets
+        runs-on: ubuntu-latest
+        needs: [changes, infra]
+        if: !cancelled() && needs.changes.outputs.packages.widgets == 'true'
+        steps:
+        -   name: Checkout /cdk directory
+            uses: actions/checkout@v4
+            with:
+                sparse-checkout: ./widgets
+                sparse-checkout-cone-mode: false
+        -   run: ls -la
+        -   run: ls -la
+            working-directory: ./widgets
+        
