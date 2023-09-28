@@ -34,7 +34,7 @@ jobs:
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
             with:
-                sparse-checkout: ./cdk
+                sparse-checkout: cdk
                 sparse-checkout-cone-mode: false
         -   run: ls -la
         -   run: ls -la
@@ -48,7 +48,7 @@ jobs:
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
             with:
-                sparse-checkout: ./doodads
+                sparse-checkout: doodads
                 sparse-checkout-cone-mode: false
         -   run: ls -la
         -   run: ls -la
@@ -62,7 +62,7 @@ jobs:
         -   name: Checkout /cdk directory
             uses: actions/checkout@v4
             with:
-                sparse-checkout: ./widgets
+                sparse-checkout: widgets
                 sparse-checkout-cone-mode: false
         -   run: ls -la
         -   run: ls -la
