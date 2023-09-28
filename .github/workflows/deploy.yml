@@ -43,14 +43,11 @@ jobs:
             with:
                 sparse-checkout: cdk
                 sparse-checkout-cone-mode: false
-        -   run: ls -la
-        -   run: echo ${{ github.workspace }}
         -   name: Collapse Parent Directory
-               # rsync --remove-source-files -rP ../b/c/ ../b/
             run: rsync --remove-source-files -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/ && rmdir cdk
-        -   run: ls -la
-        -   run: ls -laR
-            working-directory: ./cdk
+        -   name: Log Directory Contents (debug)
+            if: ${{ runner.debug == '1' }}
+            run: ls -la
     doodads:
         name: Deploy Doodads
         runs-on: ubuntu-latest
