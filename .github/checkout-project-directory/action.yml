@@ -7,3 +7,4 @@ runs:
   using: "composite"
   steps:
     - run: echo ${{ inputs.project-directory }}.
+      shell: bash
