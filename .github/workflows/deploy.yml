@@ -45,7 +45,7 @@ jobs:
                 sparse-checkout-cone-mode: false
         -   run: ls -la
         -   name: Collapse Parent Directory
-            run: mv cdk/{.,}* . 
+            run: mv -f cdk/{.,}* . 
             # && rmdir cdk/
         -   run: ls -la
         # -   run: ls -laR
