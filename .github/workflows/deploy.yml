@@ -22,7 +22,7 @@ jobs:
             with:
                 fetch-depth: 0
                 fetch-tags: false
-        -   uses: dorny/paths-filter@v2
+        -   uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
             id: filter
             with:
                 filters: |
@@ -43,6 +43,7 @@ jobs:
             with:
                 sparse-checkout: cdk
                 sparse-checkout-cone-mode: false
+                path: cdk
         -   run: ls -la
         -   run: ls -la
             working-directory: ./cdk
@@ -52,7 +53,7 @@ jobs:
         needs: [changes, infra]
         if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'doodads') }}
         steps:
-        -   name: Checkout /cdk directory
+        -   name: Checkout /doodads directory
             uses: actions/checkout@v4
             with:
                 sparse-checkout: doodads
@@ -66,7 +67,7 @@ jobs:
         needs: [changes, infra]
         if: ${{ !cancelled() && contains(needs.changes.outputs.packages, 'widgets') }}
         steps:
-        -   name: Checkout /cdk directory
+        -   name: Checkout /widgets directory
             uses: actions/checkout@v4
             with:
                 sparse-checkout: widgets
