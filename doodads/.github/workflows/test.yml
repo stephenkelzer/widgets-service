@@ -1,0 +1,20 @@
+name: TESTETSESTSETEST
+
+on:
+    repository_dispatch:
+        types:
+            - test-event
+  
+
+concurrency: 
+    group: receive-repo-dispatch-event-${{ github.head_ref }}
+    cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+    receive-repo-dispatch-event:
+        name: Receive Dispatch Event
+        runs-on: ubuntu-latest
+        steps:
+        -   run: echo "Received a repository dispatch event"
