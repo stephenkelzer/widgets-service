@@ -43,7 +43,7 @@ jobs:
             with:
                 sparse-checkout: cdk
                 sparse-checkout-cone-mode: false
-                path: cdk/../..
+                path: ./..
         -   run: ls -la
         -   name: copy file
             uses: canastro/copy-file-action@master
