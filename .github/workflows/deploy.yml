@@ -45,8 +45,7 @@ jobs:
                 sparse-checkout-cone-mode: false
         -   run: ls -la
         -   name: Collapse Parent Directory
-            run: rsync --dry-run --remove-source-files /cdk/ /
-            # && rmdir cdk/
+            run: sudo rsync --dry-run --remove-source-files cdk/ /
         -   run: ls -la
         # -   run: ls -laR
         #     working-directory: ./cdk
