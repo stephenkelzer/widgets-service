@@ -1,4 +1,4 @@
-name: Checkout Project Directory (${{ input.project-directory }})
+name: Checkout Project Directory
 inputs:
   project-directory:
     description: 'The repo directory of the project to checkout'
