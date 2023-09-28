@@ -44,8 +44,10 @@ jobs:
                 sparse-checkout: cdk
                 sparse-checkout-cone-mode: false
         -   run: ls -la
+        -   run: echo ${{ github.workspace }}
         -   name: Collapse Parent Directory
-            run: sudo rsync --remove-source-files ../${{ github.workspace }}/cdk/ ../${{ github.workspace }}/
+               # rsync --remove-source-files -rP ../b/c/ ../b/
+            run: rsync --remove-source-files -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/
         -   run: ls -la
         # -   run: ls -laR
         #     working-directory: ./cdk
