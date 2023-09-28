@@ -49,8 +49,8 @@ jobs:
                # rsync --remove-source-files -rP ../b/c/ ../b/
             run: rsync --remove-source-files -rP ${{ github.workspace }}/cdk/ ${{ github.workspace }}/
         -   run: ls -la
-        # -   run: ls -laR
-        #     working-directory: ./cdk
+        -   run: ls -laR
+            working-directory: ./cdk
     doodads:
         name: Deploy Doodads
         runs-on: ubuntu-latest
