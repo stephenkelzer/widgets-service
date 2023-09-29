@@ -14,7 +14,7 @@ export class WidgetsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WidgetsStackProps) {
     super(scope, id, props);
 
-    const apiGateway = new cdkApiGateway.HttpApi(this, `${props.environment}-ApiGateway`, {
+    const apiGateway = new cdkApiGateway.HttpApi(this, `ApiGateway`, {
       corsPreflight: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowHeaders: Cors.DEFAULT_HEADERS,
@@ -22,28 +22,28 @@ export class WidgetsStack extends cdk.Stack {
       },
     });
 
-    const getWidgetsLambda = new cdkLambda.Function(this, 'Lambda', {
+    const listWidgetsLambda = new cdkLambda.Function(this, 'ListWidgetsLambda', {
       code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'get-widgets-lambda.handler',
+      handler: 'list-widgets-lambda.handler',
       runtime: cdkLambda.Runtime.NODEJS_LATEST
     });
 
     apiGateway.addRoutes({
       path: '/widgets',
       methods: [cdkApiGateway.HttpMethod.GET],
-      integration: new HttpLambdaIntegration('widgets-get-integration', getWidgetsLambda),
+      integration: new HttpLambdaIntegration('list-widgets-integration', listWidgetsLambda),
     });
 
-    const postWidgetsLambda = new cdkLambda.Function(this, 'Lambda', {
+    const createWidgetLambda = new cdkLambda.Function(this, 'CreateWidgetLambda', {
       code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'post-widgets-lambda.handler',
+      handler: 'create-widget-lambda.handler',
       runtime: cdkLambda.Runtime.NODEJS_LATEST
     });
 
     apiGateway.addRoutes({
       path: '/widgets',
       methods: [cdkApiGateway.HttpMethod.POST],
-      integration: new HttpLambdaIntegration('widgets-post-integration', postWidgetsLambda),
+      integration: new HttpLambdaIntegration('create-widget-integration', createWidgetLambda),
     });
 
     new cdk.CfnOutput(this, 'api_gateway_url', {

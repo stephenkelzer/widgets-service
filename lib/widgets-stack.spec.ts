@@ -18,8 +18,40 @@ describe('WidgetsStack', () => {
                 "S3Bucket": Match.anyValue(),
                 "S3Key": Match.anyValue()
             },
-            Handler: 'get-widgets-lambda.handler',
+            Handler: 'list-widgets-lambda.handler',
             Runtime: 'nodejs18.x',
+        });
+
+
+        template.hasResourceProperties('AWS::Lambda::Function', {
+            Code: {
+                "S3Bucket": Match.anyValue(),
+                "S3Key": Match.anyValue()
+            },
+            Handler: 'create-widget-lambda.handler',
+            Runtime: 'nodejs18.x',
+        });
+
+        template.hasResourceProperties('AWS::ApiGatewayV2::Api', {
+            CorsConfiguration: {
+                AllowHeaders: [
+                    "Content-Type",
+                    "X-Amz-Date",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                ],
+                AllowMethods: ["*"],
+                AllowOrigins: ["*"]
+            },
+            Name: "ApiGateway",
+            ProtocolType: "HTTP"
+        });
+
+        template.hasResourceProperties('AWS::ApiGatewayV2::Stage', {
+            AutoDeploy: true,
+            StageName: "$default"
         });
     });
 });
