@@ -34,4 +34,9 @@ jobs:
                     aws-region: ${{ vars.AWS_REGION }}
 
             -   name: Deploy Stack
-                run: STAGE=staging npm run deploy
+                run: |
+                    STAGE=staging
+                    npx cdk deploy \
+                    --require-approval never \
+                    --parameters MyLambdaBucket=my_lambda_bucket \
+                    --parameters MyLambdaKey=my_lambda_key \
