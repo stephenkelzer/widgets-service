@@ -12,7 +12,7 @@ export class WidgetsStack extends cdk.Stack {
 
     new lambda.Function(this, 'Lambda', {
       code: lambda.Code.fromAsset('./dist'),
-      handler: 'index.getWidgets',
+      handler: 'get-widgets-lambda.getWidgets',
       runtime: lambda.Runtime.NODEJS_LATEST
     });
   }
