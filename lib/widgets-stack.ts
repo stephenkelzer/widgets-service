@@ -13,16 +13,7 @@ export class WidgetsStack extends cdk.Stack {
     super(scope, id, props);
 
     const apiGateway = new cdkApiGateway.HttpApi(this, 'ApiGateway', {
-      corsPreflight: {
-        allowHeaders: [
-          'Content-Type',
-        ],
-        allowMethods: [
-          cdkApiGateway.CorsHttpMethod.GET,
-        ],
-        // allowCredentials: true,
-        allowOrigins: ['http://localhost:3000'],
-      },
+      apiName: 'widgets-api',
     });
 
     const lambda = new cdkLambda.Function(this, 'Lambda', {
