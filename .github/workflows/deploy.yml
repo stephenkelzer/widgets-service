@@ -38,5 +38,3 @@ jobs:
                     STAGE=staging \
                     npx cdk deploy \
                     --require-approval never \
-                    --parameters MyLambdaBucket=my_lambda_bucket \
-                    --parameters MyLambdaKey=my_lambda_key \
