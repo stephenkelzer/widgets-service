@@ -34,4 +34,4 @@ jobs:
                     aws-region: ${{ vars.AWS_REGION }}
 
             -   name: Deploy Stack
-                run: STAGE=staging cdk diff --require-approval never
+                run: STAGE=staging npx cdk diff --require-approval never
