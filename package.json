@@ -1,19 +1,30 @@
 {
-  "name": "learning-aws-cdk",
+  "name": "widgets",
   "version": "1.0.0",
+  "author": "@stephenkelzer",
+  "bin": {
+    "app": "bin/app.js"
+  },
   "scripts": {
     "bootstrap": "cdk bootstrap",
     "diff": "cdk diff --require-approval never",
-    "deploy": "cdk deploy --require-approval never"
+    "deploy": "cdk deploy --require-approval never",
+    "build": "tsc",
+    "test": "jest"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@types/jest": "29.5.5",
     "@tsconfig/node18": "18.2.2",
     "@types/node": "20.7.1",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.1",
     "aws-cdk": "2.99.0",
-    "aws-cdk-lib": "2.99.0",
-    "constructs": "10.2.70",
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.99.0",
+    "constructs": "10.2.70"
   },
   "engines": {
     "node": "18.18.0"

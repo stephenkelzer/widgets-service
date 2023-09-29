@@ -5,7 +5,7 @@ on:
         branches: main
 
 concurrency: 
-    group: deploy-infra-${{ github.head_ref }}
+    group: deploy-${{ github.head_ref }}
     cancel-in-progress: true
 
 permissions: read-all
@@ -26,6 +26,10 @@ jobs:
             -   name: Install Dependencies
                 uses: bahmutov/npm-install@c46e3830503dcb831cf4aee3f26b4e6bce8cc9d2
 
+            # This should get moved to a CI flow later
+            -   name: Test
+                run: npm run test
+
             -   name: Configure AWS Credentials
                 uses: aws-actions/configure-aws-credentials@v4
                 with:
@@ -33,8 +37,8 @@ jobs:
                     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                     aws-region: ${{ vars.AWS_REGION }}
 
-            -   name: Deploy Stack
-                run: |
-                    ENVIRONMENT=staging \
-                    npx cdk deploy \
-                    --require-approval never \
+            -   name: CDK Diff
+                run: ENVIRONMENT=staging npm run diff
+
+            -   name: CDK Deploy
+                run: ENVIRONMENT=staging npm run deploy

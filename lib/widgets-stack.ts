@@ -1,26 +1,15 @@
-import { Stack, StackProps, CfnParameter } from "aws-cdk-lib";
-import { Function, Code, Runtime } from "aws-cdk-lib/aws-lambda";
-import { Construct } from "constructs";
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 
-export default class WidgetsStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+export class WidgetsStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    new Function(this, 'WidgetLambda', {
-      code: Code.fromInline('exports.handler = async (event) => console.log(event)'),
-      // code: Code.fromCfnParameters({
-      //   bucketNameParam: new CfnParameter(this, 'MyLambdaBucket', {
-      //     type: 'String',
-      //     description: 'The name of the S3 bucket that contains the Lambda code',
-      //   }),
-      //   objectKeyParam: new CfnParameter(this, 'MyLambdaKey', {
-      //     type: 'String',
-      //     description: 'The name of the S3 key that contains the Lambda code',
-      //   }),
-      // }),
+    new lambda.Function(this, 'WidgetLambda', {
+      code: lambda.Code.fromInline('exports.handler = async (event) => console.log(event)'),
       handler: 'index.handler',
-      runtime: Runtime.NODEJS_LATEST
+      runtime: lambda.Runtime.NODEJS_LATEST
     });
-
   }
 }

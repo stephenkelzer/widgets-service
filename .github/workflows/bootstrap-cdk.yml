@@ -26,4 +26,4 @@ jobs:
                     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                     aws-region: ${{ vars.AWS_REGION }}
 
-            -   run: ENVIRONMENT=bootstrap npm run bootstrap
+            -   run: npm run bootstrap
