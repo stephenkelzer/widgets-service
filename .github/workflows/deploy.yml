@@ -1,0 +1,37 @@
+name: Deploy Infrastructure
+
+on:
+    push:
+        branches: main
+
+concurrency: 
+    group: deploy-infra-${{ github.head_ref }}
+    cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+    deploy:
+        name: Setup AWS Infrastructure
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Setup Node
+                uses: actions/setup-node@v3
+                with:
+                    node-version: 18.18.0
+
+            -   name: Checkout Code
+                uses: actions/checkout@v3
+
+            -   name: Install Dependencies
+                uses: bahmutov/npm-install@c46e3830503dcb831cf4aee3f26b4e6bce8cc9d2
+
+            -   name: Configure AWS Credentials
+                uses: aws-actions/configure-aws-credentials@v1
+                with:
+                    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                    aws-region: ${{ vars.AWS_REGION }}
+
+            -   name: Deploy Stack
+                run: STAGE=staging cdk diff --require-approval never
