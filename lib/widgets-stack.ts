@@ -3,6 +3,8 @@ import { Construct } from 'constructs';
 import * as cdkLambda from 'aws-cdk-lib/aws-lambda';
 import * as cdkApiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import { Cors } from 'aws-cdk-lib/aws-apigateway';
+import { CorsHttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
 
 export interface WidgetsStackProps extends cdk.StackProps {
   environment: 'test' | 'local' | 'staging' | 'production';
@@ -13,7 +15,11 @@ export class WidgetsStack extends cdk.Stack {
     super(scope, id, props);
 
     const apiGateway = new cdkApiGateway.HttpApi(this, 'ApiGateway', {
-      apiName: 'widgets-api',
+      corsPreflight: {
+        allowOrigins: Cors.ALL_ORIGINS,
+        allowHeaders: Cors.DEFAULT_HEADERS,
+        allowMethods: [CorsHttpMethod.ANY],
+      },
     });
 
     const lambda = new cdkLambda.Function(this, 'Lambda', {
