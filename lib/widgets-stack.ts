@@ -11,7 +11,7 @@ export class WidgetsStack extends cdk.Stack {
     super(scope, id, props);
 
     new lambda.Function(this, 'Lambda', {
-      code: lambda.Code.fromAsset('./src'),
+      code: lambda.Code.fromAsset('./dist'),
       handler: 'index.getWidgets',
       runtime: lambda.Runtime.NODEJS_LATEST
     });

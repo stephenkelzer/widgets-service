@@ -29,6 +29,9 @@ jobs:
             # This should get moved to a CI flow later
             -   name: Test
                 run: npm run test
+            
+            -   name: Build
+                run: npm run build
 
             -   name: Configure AWS Credentials
                 uses: aws-actions/configure-aws-credentials@v4
