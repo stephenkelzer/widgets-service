@@ -1,5 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
-import { Template } from 'aws-cdk-lib/assertions';
+import { Match, Template } from 'aws-cdk-lib/assertions';
 import { WidgetsStack } from './widgets-stack';
 
 describe('WidgetsStack', () => {
@@ -7,14 +7,18 @@ describe('WidgetsStack', () => {
         const app = new cdk.App();
 
         // test should this stack name be used IN the stack? the lambda name doesn't include the stack name at all.... should it?
-        const stack = new WidgetsStack(app, 'TEST-WidgetsStack');
+        const stack = new WidgetsStack(app, 'TEST-Widgets', { environment: 'test' });
 
         const template = Template.fromStack(stack);
 
         // console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
-            Handler: 'index.handler',
+            Code: {
+                "S3Bucket": Match.anyValue(),
+                "S3Key": Match.anyValue()
+            },
+            Handler: 'index.getWidgets',
             Runtime: 'nodejs18.x',
         });
     });

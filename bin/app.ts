@@ -1,11 +1,12 @@
 import * as cdk from 'aws-cdk-lib';
 import { WidgetsStack } from '../lib/widgets-stack';
 
-const environment = process.env.ENVIRONMENT || 'local';
+const environment: any = process.env.ENVIRONMENT || 'local';
 
 const app = new cdk.App();
 
-new WidgetsStack(app, `${environment}-WidgetsStack`, {
+new WidgetsStack(app, `${environment}-Widgets`, {
+    environment,
     env: {
         // these are here temporarily. I really feel like these shouldn't be checked in.
         // I see lots of AWS documentation that says to check them in, but I don't like it.
