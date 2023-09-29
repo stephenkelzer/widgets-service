@@ -14,7 +14,7 @@ export class WidgetsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WidgetsStackProps) {
     super(scope, id, props);
 
-    const apiGateway = new cdkApiGateway.HttpApi(this, `ApiGateway`, {
+    const apiGateway = new cdkApiGateway.HttpApi(this, `${props.environment}-ApiGateway`, {
       corsPreflight: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowHeaders: Cors.DEFAULT_HEADERS,

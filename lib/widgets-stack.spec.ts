@@ -45,7 +45,7 @@ describe('WidgetsStack', () => {
                 AllowMethods: ["*"],
                 AllowOrigins: ["*"]
             },
-            Name: "ApiGateway",
+            Name: "test-ApiGateway",
             ProtocolType: "HTTP"
         });
 
