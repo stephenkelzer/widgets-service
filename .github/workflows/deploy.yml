@@ -26,12 +26,12 @@ jobs:
             -   name: Install Dependencies
                 uses: bahmutov/npm-install@c46e3830503dcb831cf4aee3f26b4e6bce8cc9d2
 
+            -   name: Build
+                run: npm run build
+                
             # This should get moved to a CI flow later
             -   name: Test
                 run: npm run test
-            
-            -   name: Build
-                run: npm run build
 
             -   name: Configure AWS Credentials
                 uses: aws-actions/configure-aws-credentials@v4
