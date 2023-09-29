@@ -3,7 +3,6 @@ name: Deploy Infrastructure
 on:
     push:
         branches: main
-        paths: infra/**
 
 concurrency: 
     group: deploy-infra-${{ github.head_ref }}
@@ -16,14 +15,8 @@ jobs:
         name: Setup AWS Infrastructure
         runs-on: ubuntu-latest
         steps:
-            -   name: Checkout /infra Directory
-                uses: actions/checkout@v3
-                with:
-                    sparse-checkout: infra
-                    sparse-checkout-cone-mode: false
+            -   uses: actions/checkout@v3
 
-            -   name: Install Dependencies
-                run: npm ci
+            -   run: npm ci
 
-            -   name: DEBUG
-                run: ls -la
+            -   run: ls -la
