@@ -18,7 +18,7 @@ describe('WidgetsStack', () => {
                 "S3Bucket": Match.anyValue(),
                 "S3Key": Match.anyValue()
             },
-            Handler: 'get-widgets-lambda.getWidgets',
+            Handler: 'get-widgets-lambda.handler',
             Runtime: 'nodejs18.x',
         });
     });

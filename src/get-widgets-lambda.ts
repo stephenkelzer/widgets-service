@@ -1,18 +1,14 @@
-import { APIGatewayProxyHandler } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda'
 
-export const getWidgets: APIGatewayProxyHandler = async event => {
+export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     console.log('getWidgets', { event })
 
-    switch (event.httpMethod) {
-        case 'GET':
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ message: 'You made it!' })
-            }
-        default:
-            return {
-                statusCode: 404,
-                body: "Not Found"
-            }
+    if (event.queryStringParameters?.error) {
+        throw new Error('This is an error!')
+    }
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'You made it!' })
     }
 }

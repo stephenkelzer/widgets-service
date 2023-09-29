@@ -27,14 +27,14 @@ export class WidgetsStack extends cdk.Stack {
 
     const lambda = new cdkLambda.Function(this, 'Lambda', {
       code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'get-widgets-lambda.getWidgets',
+      handler: 'get-widgets-lambda.handler',
       runtime: cdkLambda.Runtime.NODEJS_LATEST
     });
 
     apiGateway.addRoutes({
       path: '/widgets',
       methods: [cdkApiGateway.HttpMethod.GET],
-      integration: new HttpLambdaIntegration('get-todos-integration', lambda),
+      integration: new HttpLambdaIntegration('widgets-get-integration', lambda),
     });
 
     new cdk.CfnOutput(this, 'api_gateway_url', {
