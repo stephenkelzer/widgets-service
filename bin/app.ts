@@ -1,5 +1,5 @@
 import { App } from 'aws-cdk-lib';
-import MyStack from '../lib/my-stack';
+import WidgetsStack from '../lib/widgets-stack';
 
 const stage = process.env.STAGE;
 
@@ -9,4 +9,4 @@ if (!stage) {
 
 const app = new App();
 
-new MyStack(app, `MyStack-${stage}`);
+new WidgetsStack(app, `MyStack-${stage}`);
