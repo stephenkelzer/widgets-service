@@ -35,7 +35,7 @@ jobs:
 
             -   name: Deploy Stack
                 run: |
-                    STAGE=staging
+                    STAGE=staging \
                     npx cdk deploy \
                     --require-approval never \
                     --parameters MyLambdaBucket=my_lambda_bucket \
