@@ -1,0 +1,29 @@
+name: Deploy Infrastructure
+
+on:
+    push:
+        branches: main
+        paths: infra/**
+
+concurrency: 
+    group: deploy-infra-${{ github.head_ref }}
+    cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+    deploy-infra:
+        name: Setup AWS Infrastructure
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout /infra Directory
+                uses: actions/checkout@v3
+                with:
+                    sparse-checkout: infra
+                    sparse-checkout-cone-mode: false
+
+            -   name: Install Dependencies
+                run: npm ci
+
+            -   name: DEBUG
+                run: ls -la

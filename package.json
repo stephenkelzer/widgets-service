@@ -1,0 +1,12 @@
+{
+  "name": "learning-aws-cdk",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@aws-cdk/core": "1.204.0",
+    "@tsconfig/node18": "18.2.2",
+    "@types/node": "20.7.1",
+    "aws-cdk": "2.99.0",
+    "ts-node": "10.9.1",
+    "typescript": "5.2.2"
+  }
+}
