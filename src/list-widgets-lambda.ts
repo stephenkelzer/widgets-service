@@ -1,33 +1,55 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda'
-import { DynamoDB, ScanInput } from '@aws-sdk/client-dynamodb'
+import { DynamoDB, QueryCommandInput } from '@aws-sdk/client-dynamodb'
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { Widget } from './widget';
+
+interface Response {
+    items: Widget[],
+    nextCursor?: string
+}
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
-    console.log('LIST Widgets', { event })
-
-    const dynamoClient = new DynamoDB({
-        // region: 'us-west-2'
-    })
-
-    const scanTodo: ScanInput = {
-        TableName: process.env.DYNAMO_TABLE_NAME,
-        Limit: 10
-    }
-
     try {
+        console.log('LIST Widgets', { event });
 
-        const results = await dynamoClient.scan(scanTodo);
+        const pageSize = parseInt(event.queryStringParameters?.pageSize ?? '') || 10;
+        const startId = event.queryStringParameters?.cursor;
+
+        const dynamoClient = new DynamoDB();
+
+        const queryParams: QueryCommandInput = {
+            TableName: process.env.DYNAMO_TABLE_NAME,
+            Limit: pageSize,
+            ExclusiveStartKey: startId ? marshall({ id: startId }) : undefined,
+        }
+
+        console.log({ queryParams })
+
+        // if (startId) {
+        //     queryParams.ExclusiveStartKey = marshall({ id: startId })
+        // }
+
+        const results = await dynamoClient.query(queryParams);
+
         console.log({ results })
 
-        // const userData = Items ? Items.map(item => unmarshall(item)) : []
+        const items: Widget[] = results.Items ? results.Items.map(item => {
+            let row = unmarshall(item);
+            return {
+                id: row.id,
+                created: row.created,
+                name: row.name
+            } as Widget
+        }) : []
+
+        const data: Response = { items, nextCursor: results.LastEvaluatedKey?.id?.S }
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ results })
+            body: JSON.stringify(data),
         }
-
     } catch (err) {
-
-        console.log(err)
+        console.error(err)
 
         return {
             statusCode: 400,

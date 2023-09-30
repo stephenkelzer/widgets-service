@@ -27,16 +27,6 @@ export class WidgetsStack extends cdk.Stack {
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY,// should this be retain?
       billingMode: cdkDynamoDb.BillingMode.PAY_PER_REQUEST,
-      // deletionProtection: true
-    });
-
-    db.addLocalSecondaryIndex({
-      indexName: 'nameIndex',
-      sortKey: {
-        name: 'name',
-        type: cdkDynamoDb.AttributeType.STRING,
-      },
-      projectionType: cdkDynamoDb.ProjectionType.ALL,
     });
 
     const apiGateway = new cdkApiGateway.HttpApi(this, `${props.environment}-ApiGateway`, {
