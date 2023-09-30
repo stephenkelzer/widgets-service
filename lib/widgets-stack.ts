@@ -16,7 +16,7 @@ export class WidgetsStack extends cdk.Stack {
     super(scope, id, props);
 
     const db = new cdkDynamoDb.Table(this, 'WidgetsDb', {
-      tableName: 'widgets1',
+      tableName: 'widgets',
       partitionKey: {
         name: "id",
         type: cdkDynamoDb.AttributeType.STRING
