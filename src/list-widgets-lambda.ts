@@ -45,6 +45,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
         return {
             statusCode: 200,
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         }
     } catch (err) {
@@ -52,9 +53,8 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
 
         return {
             statusCode: 400,
-            body: JSON.stringify({
-                message: 'something went wrong'
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: 'something went wrong' })
         }
     }
 }

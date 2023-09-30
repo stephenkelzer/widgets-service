@@ -21,10 +21,6 @@ export class WidgetsStack extends cdk.Stack {
         name: "id",
         type: cdkDynamoDb.AttributeType.STRING
       },
-      sortKey: {
-        name: "created",
-        type: cdkDynamoDb.AttributeType.NUMBER
-      },
       billingMode: cdkDynamoDb.BillingMode.PAY_PER_REQUEST,
     });
 
