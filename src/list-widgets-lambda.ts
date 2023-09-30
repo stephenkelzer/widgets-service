@@ -20,7 +20,10 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         const queryParams: QueryCommandInput = {
             TableName: process.env.DYNAMO_TABLE_NAME,
             Limit: pageSize,
-            ExclusiveStartKey: startId ? marshall({ id: startId }) : undefined,
+        }
+
+        if (startId) {
+            queryParams.ExclusiveStartKey = marshall({ id: startId })
         }
 
         console.log({ queryParams })
