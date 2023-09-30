@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda'
-import { DynamoDB, QueryCommandInput } from '@aws-sdk/client-dynamodb'
+import { DynamoDB, QueryCommandInput, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { Widget } from './widget';
 
@@ -10,31 +10,27 @@ interface Response {
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     try {
-        console.log('LIST Widgets', { event });
+        console.log('LIST Widgets', { event: JSON.stringify(event, null, 4) });
 
         const pageSize = parseInt(event.queryStringParameters?.pageSize ?? '') || 10;
         const startId = event.queryStringParameters?.cursor;
 
         const dynamoClient = new DynamoDB();
 
-        const queryParams: QueryCommandInput = {
+        const scanParams: ScanCommandInput = {
             TableName: process.env.DYNAMO_TABLE_NAME,
             Limit: pageSize,
-        }
+        };
 
         if (startId) {
-            queryParams.ExclusiveStartKey = marshall({ id: startId })
+            scanParams.ExclusiveStartKey = marshall({ id: startId })
         }
 
-        console.log({ queryParams })
+        console.log({ queryParams: JSON.stringify(scanParams, null, 4) })
 
-        // if (startId) {
-        //     queryParams.ExclusiveStartKey = marshall({ id: startId })
-        // }
+        const results = await dynamoClient.scan(scanParams);
 
-        const results = await dynamoClient.query(queryParams);
-
-        console.log({ results })
+        console.log({ results: JSON.stringify(results, null, 4) })
 
         const items: Widget[] = results.Items ? results.Items.map(item => {
             let row = unmarshall(item);
