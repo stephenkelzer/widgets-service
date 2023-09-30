@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as cdkLambda from 'aws-cdk-lib/aws-lambda';
 import * as cdkDynamoDb from 'aws-cdk-lib/aws-dynamodb';
-import * as cdkApiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
+import * as cdkApiGatewayV2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { Cors } from 'aws-cdk-lib/aws-apigateway';
 import { CorsHttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
@@ -25,11 +25,10 @@ export class WidgetsStack extends cdk.Stack {
         name: "created",
         type: cdkDynamoDb.AttributeType.NUMBER
       },
-      removalPolicy: cdk.RemovalPolicy.DESTROY,// should this be retain?
       billingMode: cdkDynamoDb.BillingMode.PAY_PER_REQUEST,
     });
 
-    const apiGateway = new cdkApiGateway.HttpApi(this, `${props.environment}-ApiGateway`, {
+    const apiGateway = new cdkApiGatewayV2.HttpApi(this, `${props.environment}-ApiGateway`, {
       corsPreflight: {
         allowOrigins: Cors.ALL_ORIGINS,
         allowHeaders: Cors.DEFAULT_HEADERS,
@@ -50,7 +49,7 @@ export class WidgetsStack extends cdk.Stack {
 
     apiGateway.addRoutes({
       path: '/widgets',
-      methods: [cdkApiGateway.HttpMethod.GET],
+      methods: [cdkApiGatewayV2.HttpMethod.GET],
       integration: new HttpLambdaIntegration('list-widgets-integration', listWidgetsLambda),
     });
 
@@ -67,7 +66,7 @@ export class WidgetsStack extends cdk.Stack {
 
     apiGateway.addRoutes({
       path: '/widgets',
-      methods: [cdkApiGateway.HttpMethod.POST],
+      methods: [cdkApiGatewayV2.HttpMethod.POST],
       integration: new HttpLambdaIntegration('create-widget-integration', createWidgetLambda),
     });
 
