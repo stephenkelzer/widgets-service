@@ -39,7 +39,7 @@ export class WidgetsStack extends cdk.Stack {
 
     const listWidgetsLambda = new cdkLambda.Function(this, 'ListWidgetsLambda', {
       code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'list-widget-lambda.handler',
+      handler: 'list-widgets-lambda.handler',
       runtime: cdkLambda.Runtime.NODEJS_18_X,
       layers: [nodeModulesLambdaLayer],
       environment: {
