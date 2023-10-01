@@ -23,19 +23,14 @@ jobs:
             -   name: Checkout Code
                 uses: actions/checkout@v3
 
-            # install ONLY PROD dependencies
-            # in the next command `npm run build`, we bundle our dependencies for our lambda functions and layer
-            # at this time we only want prod deps in order to keep things lean
-            -   name: Install (production) Dependencies
-                run: npm ci --only=production
+            -   name: Install Dependencies
+                run: npm ci
 
             -   name: Build
                 run: npm run build
 
-            # now that we have finished building, we can install all dependencies
-            # this will allow our tests to work as well as the following CDK commands
-            -   name: Install (all) Dependencies
-                run: npm ci
+            -   name: Build NodeModules Layer
+                run: npm prune --production && npm run build-node-modules-layer && npm ci
                 
             # TODO: This should get moved to a CI flow later
             -   name: Test

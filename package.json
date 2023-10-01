@@ -11,7 +11,7 @@
     "deploy": "cdk deploy --require-approval never",
     "prebuild": "rm -rf dist",
     "build": "tsc",
-    "postbuild": "mkdir -p dist/nodejs && cp -r node_modules dist/nodejs && cd dist && zip -mr nodejs_layer.zip nodejs",
+    "build-node-modules-layer": "mkdir -p dist/nodejs && cp -r node_modules dist/nodejs && cd dist && zip -FSmr nodejs_layer.zip nodejs",
     "test": "jest"
   },
   "devDependencies": {
