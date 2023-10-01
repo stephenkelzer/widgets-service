@@ -25,7 +25,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
                 created: new Date().getTime(),
                 name: body.name,
             }),
-            // ReturnValues: 'ALL_NEW',
+            ReturnValues: 'ALL_OLD',
         }
 
         console.log({ queryParams })
@@ -33,13 +33,9 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
         const results = await dynamoClient.putItem(queryParams);
         console.log(JSON.stringify(results, null, 4));
 
-        if (!results.Attributes) {
-            throw new Error('Create called did not return any attributes')
-        }
-
         return {
             statusCode: 201,
-            body: JSON.stringify(new Widget(results.Attributes)),
+            body: JSON.stringify(new Widget({ ...results.Attributes, ...queryParams.Item })),
         }
     } catch (err) {
         console.error(err)
