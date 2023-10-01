@@ -5,7 +5,7 @@ import { Widget } from './widget';
 
 interface Response {
     items: Widget[],
-    nextCursor?: string
+    nextCursor: string | null,
 }
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
@@ -41,7 +41,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
             } as Widget
         }) : []
 
-        const data: Response = { items, nextCursor: results.LastEvaluatedKey?.id?.S }
+        const data: Response = { items, nextCursor: results.LastEvaluatedKey?.id?.S ?? null }
 
         return {
             statusCode: 200,

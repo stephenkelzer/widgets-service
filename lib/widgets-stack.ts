@@ -15,6 +15,11 @@ export class WidgetsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WidgetsStackProps) {
     super(scope, id, props);
 
+    const nodeModulesLambdaLayer = new cdkLambda.LayerVersion(this, 'NodeModulesLambdaLayer', {
+      code: cdkLambda.Code.fromAsset('./dist/nodejs_layer.zip'),
+      compatibleRuntimes: [cdkLambda.Runtime.NODEJS_18_X]
+    });
+
     const db = new cdkDynamoDb.Table(this, 'WidgetsDb', {
       tableName: 'widgets',
       partitionKey: {
@@ -33,12 +38,13 @@ export class WidgetsStack extends cdk.Stack {
     });
 
     const listWidgetsLambda = new cdkLambda.Function(this, 'ListWidgetsLambda', {
-      code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'list-widgets-lambda.handler',
-      runtime: cdkLambda.Runtime.NODEJS_LATEST,
+      code: cdkLambda.Code.fromAsset('./dist/list-widgets-lambda.js'),
+      handler: 'handler',
+      runtime: cdkLambda.Runtime.NODEJS_18_X,
+      layers: [nodeModulesLambdaLayer],
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
-      }
+      },
     });
 
     db.grantReadData(listWidgetsLambda);
@@ -50,9 +56,10 @@ export class WidgetsStack extends cdk.Stack {
     });
 
     const createWidgetLambda = new cdkLambda.Function(this, 'CreateWidgetLambda', {
-      code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'create-widget-lambda.handler',
-      runtime: cdkLambda.Runtime.NODEJS_LATEST,
+      code: cdkLambda.Code.fromAsset('./dist/create-widget-lambda.handler.js'),
+      handler: 'handler',
+      runtime: cdkLambda.Runtime.NODEJS_18_X,
+      layers: [nodeModulesLambdaLayer],
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       }
