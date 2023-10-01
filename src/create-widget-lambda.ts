@@ -25,7 +25,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
                 created: new Date().getTime(),
                 name: body.name,
             }),
-            ReturnValues: 'ALL_NEW',
+            // ReturnValues: 'ALL_NEW',
         }
 
         console.log({ queryParams })
