@@ -38,8 +38,8 @@ export class WidgetsStack extends cdk.Stack {
     });
 
     const listWidgetsLambda = new cdkLambda.Function(this, 'ListWidgetsLambda', {
-      code: cdkLambda.Code.fromAsset('./dist/list-widgets-lambda.js'),
-      handler: 'handler',
+      code: cdkLambda.Code.fromAsset('./dist'),
+      handler: 'list-widget-lambda.handler',
       runtime: cdkLambda.Runtime.NODEJS_18_X,
       layers: [nodeModulesLambdaLayer],
       environment: {
@@ -56,8 +56,8 @@ export class WidgetsStack extends cdk.Stack {
     });
 
     const createWidgetLambda = new cdkLambda.Function(this, 'CreateWidgetLambda', {
-      code: cdkLambda.Code.fromAsset('./dist/create-widget-lambda.handler.js'),
-      handler: 'handler',
+      code: cdkLambda.Code.fromAsset('./dist'),
+      handler: 'create-widget-lambda.handler',
       runtime: cdkLambda.Runtime.NODEJS_18_X,
       layers: [nodeModulesLambdaLayer],
       environment: {
