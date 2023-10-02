@@ -4,7 +4,7 @@ import { PendingWidget, Widget } from '../widget';
 import { marshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDB, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
 
-export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
+export const handler: APIGatewayProxyHandlerV2<Widget> = async (event, context) => {
     try {
         console.log('Create Widget', { event, context })
 
@@ -33,10 +33,12 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
         const results = await dynamoClient.putItem(queryParams);
         console.log(JSON.stringify(results, null, 4));
 
-        return {
-            statusCode: 201,
-            body: JSON.stringify(new Widget({ ...results.Attributes, ...queryParams.Item })),
-        }
+        // return {
+        //     statusCode: 201,
+        //     body: JSON.stringify(new Widget({ ...results.Attributes, ...queryParams.Item })),
+        // }
+
+        return new Widget({ ...results.Attributes, ...queryParams.Item });
     } catch (err) {
         console.error(err)
 
