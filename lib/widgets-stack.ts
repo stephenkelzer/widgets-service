@@ -6,6 +6,7 @@ import * as cdkApiGatewayV2 from '@aws-cdk/aws-apigatewayv2-alpha';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { Cors } from 'aws-cdk-lib/aws-apigateway';
 import { CorsHttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
+import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 
 export interface WidgetsStackProps extends cdk.StackProps {
   environment: 'test' | 'local' | 'staging' | 'production';
@@ -34,7 +35,12 @@ export class WidgetsStack extends cdk.Stack {
 
     const listWidgetsLambda = new cdkLambda.DockerImageFunction(this, "ListWidgetLambda", {
       description: "List Widgets Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_PATH: "/dist/list.js" } }),
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
+        buildArgs: {
+          FILE_PATH: "/dist/list.js"
+        },
+        platform: Platform.LINUX_AMD64
+      }),
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
@@ -50,7 +56,12 @@ export class WidgetsStack extends cdk.Stack {
 
     const createWidgetLambda = new cdkLambda.DockerImageFunction(this, "CreateWidgetLambda", {
       description: "Create Widget Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_PATH: "/dist/create.js" } }),
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
+        buildArgs: {
+          FILE_PATH: "/dist/create.js"
+        },
+        platform: Platform.LINUX_AMD64
+      }),
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
