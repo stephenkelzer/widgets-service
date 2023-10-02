@@ -11,7 +11,7 @@ describe('WidgetsStack', () => {
 
         const template = Template.fromStack(stack);
 
-        console.log(JSON.stringify(template, undefined, 4));
+        // console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "List Widgets Lambda",
