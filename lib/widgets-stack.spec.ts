@@ -11,7 +11,7 @@ describe('WidgetsStack', () => {
 
         const template = Template.fromStack(stack);
 
-        // console.log(JSON.stringify(template, undefined, 4));
+        console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "List Widgets Lambda",
@@ -45,64 +45,32 @@ describe('WidgetsStack', () => {
             }
         });
 
-        template.hasResourceProperties('AWS::ApiGateway::RestApi', {
+        template.hasResourceProperties('AWS::ApiGatewayV2::Api', {
             Name: "test-ApiGateway",
-            EndpointConfiguration: {
-                Types: ["REGIONAL"]
+            ProtocolType: "HTTP",
+            CorsConfiguration: {
+                AllowHeaders: [
+                    "Content-Type",
+                    "X-Amz-Date",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "X-Amz-User-Agent"
+                ],
+                AllowMethods: ["*"],
+                AllowOrigins: ["*"]
             }
         });
-        const apiGatewayLogicalId = Object.keys(template.findResources('AWS::ApiGateway::RestApi', {
+        const apiGatewayLogicalId = Object.keys(template.findResources('AWS::ApiGatewayV2::Api', {
             Properties: {
                 Name: "test-ApiGateway"
             }
         }))[0];
 
-
-        // Ensure CORS is setup
-        template.hasResourceProperties('AWS::ApiGateway::Method', {
-            HttpMethod: "OPTIONS",
-            Integration: {
-                IntegrationResponses: [
-                    {
-                        ResponseParameters: {
-                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                            "method.response.header.Access-Control-Allow-Origin": "'*'",
-                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
-                        },
-                        StatusCode: "204"
-                    }
-                ],
-                RequestTemplates: {
-                    "application/json": "{ statusCode: 200 }"
-                },
-                Type: "MOCK"
-            },
-            MethodResponses: [
-                {
-                    ResponseParameters: {
-                        "method.response.header.Access-Control-Allow-Headers": true,
-                        "method.response.header.Access-Control-Allow-Methods": true,
-                        "method.response.header.Access-Control-Allow-Origin": true
-                    },
-                    StatusCode: "204"
-                }
-            ],
-            ResourceId: {
-                "Fn::GetAtt": [
-                    apiGatewayLogicalId,
-                    "RootResourceId"
-                ]
-            },
-            RestApiId: {
-                Ref: apiGatewayLogicalId
-            }
-        });
-
-        // Ensure STAGE is setup on ApiGateway
-        template.hasResourceProperties('AWS::ApiGateway::Stage', {
-            RestApiId: { Ref: apiGatewayLogicalId },
-            DeploymentId: { Ref: Match.anyValue() },
-            StageName: "default"
+        template.hasResourceProperties('AWS::ApiGatewayV2::Stage', {
+            AutoDeploy: true,
+            StageName: "$default",
+            ApiId: { Ref: apiGatewayLogicalId }
         });
     });
 });

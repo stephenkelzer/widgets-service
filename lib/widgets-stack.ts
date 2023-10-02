@@ -1,9 +1,12 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as cdkApiGateway from 'aws-cdk-lib/aws-apigateway';
 import * as cdkDynamoDB from 'aws-cdk-lib/aws-dynamodb';
 import * as cdkLambda from 'aws-cdk-lib/aws-lambda';
+import * as cdkApiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
+import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
+import { Cors } from 'aws-cdk-lib/aws-apigateway';
+
 
 export interface WidgetsStackProps extends cdk.StackProps {
   environment: 'test' | 'local' | 'staging' | 'production';
@@ -67,22 +70,33 @@ export class WidgetsStack extends cdk.Stack {
     });
     dynamoTable.grantReadData(getLambda);
 
-    const apiGateway = new cdkApiGateway.RestApi(this, `${props.environment}-ApiGateway`, {
-      defaultCorsPreflightOptions: {
-        allowOrigins: cdkApiGateway.Cors.ALL_ORIGINS,
-        allowMethods: cdkApiGateway.Cors.ALL_METHODS,
-        allowHeaders: cdkApiGateway.Cors.DEFAULT_HEADERS,
+
+    const apiGateway = new cdkApiGateway.HttpApi(this, `${props.environment}-ApiGateway`, {
+      corsPreflight: {
+        allowOrigins: Cors.ALL_ORIGINS,
+        allowHeaders: Cors.DEFAULT_HEADERS,
+        allowMethods: [cdkApiGateway.CorsHttpMethod.ANY],
       },
-      endpointTypes: [cdkApiGateway.EndpointType.REGIONAL],
-      deployOptions: { stageName: "default" },
-      deploy: true,
+      // add default 404 route?
     });
 
-    const widgetApiEndpoint = apiGateway.root.addResource("widgets");
-    widgetApiEndpoint.addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
-    widgetApiEndpoint.addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
-    const widgetApiEndpointId = widgetApiEndpoint.addResource("{id}");
-    widgetApiEndpointId.addMethod("GET", new cdkApiGateway.LambdaIntegration(getLambda));
+    apiGateway.addRoutes({
+      path: '/widgets',
+      methods: [cdkApiGateway.HttpMethod.GET],
+      integration: new HttpLambdaIntegration('list-widgets-integration', listLambda, { payloadFormatVersion: cdkApiGateway.PayloadFormatVersion.VERSION_2_0 })
+    });
+
+    apiGateway.addRoutes({
+      path: '/widgets/{id}',
+      methods: [cdkApiGateway.HttpMethod.GET],
+      integration: new HttpLambdaIntegration('get-widget-integration', getLambda, { payloadFormatVersion: cdkApiGateway.PayloadFormatVersion.VERSION_2_0 })
+    });
+
+    apiGateway.addRoutes({
+      path: '/widgets',
+      methods: [cdkApiGateway.HttpMethod.POST],
+      integration: new HttpLambdaIntegration('create-widget-integration', createLambda, { payloadFormatVersion: cdkApiGateway.PayloadFormatVersion.VERSION_2_0 }),
+    });
 
     new cdk.CfnOutput(this, 'api_gateway_url', { value: apiGateway.url ?? "unknown" });
   }
