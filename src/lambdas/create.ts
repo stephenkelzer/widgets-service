@@ -3,8 +3,9 @@
 // import { DynamoDB, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
 // import { v4 as uuidv4 } from 'uuid';
 // import { marshall } from '@aws-sdk/util-dynamodb';
+import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 
-export const handler = async (event: any, context: any): Promise<any> => {
+export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
     // try {
     console.log('Create Widget', { event, context })
 
@@ -45,5 +46,10 @@ export const handler = async (event: any, context: any): Promise<any> => {
     //         body: JSON.stringify({ message: 'something went wrong' })
     //     }
     // }
-    return { message: "Hello, world!" };
+    // return { statusCode: "200", responseModels: { message: "Hello, world!" } };
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Hello, world!' }),
+    }
 }
