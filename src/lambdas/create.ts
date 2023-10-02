@@ -3,6 +3,7 @@ import { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 import { PendingWidget, Widget } from '../widget';
 import { marshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDB, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
+import { jsonResponse } from '../json-response';
 
 export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest) => {
     try {
@@ -10,15 +11,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
 
         const body: PendingWidget = JSON.parse(event.body ?? '{}');
         if (!body.name || typeof body.name !== 'string' || body.name.length < 1) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: 'name is required' })
-            }
+            return jsonResponse({ message: 'name is required' }, 400);
         } else if (body.name.length < 5) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: 'name must be 5 or more characters in length' })
-            }
+            return jsonResponse({ message: 'name must be 5 or more characters in length' }, 400);
         }
 
         const dynamoClient = new DynamoDB();
@@ -39,16 +34,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
 
         console.log(JSON.stringify(results, null, 4));
 
-        return {
-            statusCode: 201,
-            body: JSON.stringify(new Widget({ ...results.Attributes, ...queryParams.Item })),
-        }
+        return jsonResponse(new Widget({ ...results.Attributes, ...queryParams.Item }), 201);
     } catch (err) {
         console.error(err)
 
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: 'something went wrong' })
-        }
+        return jsonResponse({ message: 'something went wrong' }, 500);
     }
 }

@@ -2,6 +2,7 @@ import { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import { DynamoDB, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { Widget } from '../widget';
+import { jsonResponse } from '../json-response';
 
 interface Response {
     items: Widget[],
@@ -43,16 +44,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
 
         const data: Response = { items, nextCursor: results.LastEvaluatedKey?.id?.S ?? null }
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify(data),
-        }
+        return jsonResponse(data);
     } catch (err) {
         console.error(err)
 
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: 'something went wrong' })
-        }
+        return jsonResponse({ message: 'something went wrong' }, 500);
     }
 }

@@ -2,6 +2,7 @@ import { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import { DynamoDB, GetItemCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { Widget } from '../widget';
+import { jsonResponse } from '../json-response';
 
 export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest) => {
     try {
@@ -9,10 +10,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
 
         const id = event.pathParameters?.id;
         if (!id) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ message: 'id is required' })
-            }
+            return jsonResponse({ message: 'id is required' }, 400);
         }
 
         const dynamoClient = new DynamoDB();
@@ -29,10 +27,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
         console.log({ results: JSON.stringify(results, null, 4) })
 
         if (!results.Item) {
-            return {
-                statusCode: 404,
-                body: JSON.stringify({ message: 'not found' })
-            }
+            return jsonResponse({ message: 'not found' }, 404);
         }
 
         const parsedItem = unmarshall(results.Item);
@@ -43,16 +38,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
             name: parsedItem.name,
         }
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify(data),
-        }
+        return jsonResponse(data);
     } catch (err) {
         console.error(err)
 
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: 'something went wrong' })
-        }
+        return jsonResponse({ message: 'something went wrong' }, 500);
     }
 }
