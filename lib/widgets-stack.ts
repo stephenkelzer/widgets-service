@@ -58,9 +58,8 @@ export class WidgetsStack extends cdk.Stack {
         allowMethods: cdkApiGateway.Cors.ALL_METHODS,
         allowHeaders: cdkApiGateway.Cors.DEFAULT_HEADERS,
       },
-      deployOptions: {
-        stageName: props.environment,
-      },
+      endpointTypes: [cdkApiGateway.EndpointType.REGIONAL],
+      deployOptions: { stageName: "default" },
       deploy: true,
     });
 

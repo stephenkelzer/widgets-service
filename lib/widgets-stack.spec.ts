@@ -11,7 +11,7 @@ describe('WidgetsStack', () => {
 
         const template = Template.fromStack(stack);
 
-        console.log(JSON.stringify(template, undefined, 4));
+        // console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "List Widgets Lambda",
@@ -46,7 +46,10 @@ describe('WidgetsStack', () => {
         });
 
         template.hasResourceProperties('AWS::ApiGateway::RestApi', {
-            Name: "test-ApiGateway"
+            Name: "test-ApiGateway",
+            EndpointConfiguration: {
+                Types: ["REGIONAL"]
+            }
         });
         const apiGatewayLogicalId = Object.keys(template.findResources('AWS::ApiGateway::RestApi', {
             Properties: {
@@ -54,6 +57,8 @@ describe('WidgetsStack', () => {
             }
         }))[0];
 
+
+        // Ensure CORS is setup
         template.hasResourceProperties('AWS::ApiGateway::Method', {
             HttpMethod: "OPTIONS",
             Integration: {
@@ -93,10 +98,11 @@ describe('WidgetsStack', () => {
             }
         });
 
+        // Ensure STAGE is setup on ApiGateway
         template.hasResourceProperties('AWS::ApiGateway::Stage', {
             RestApiId: { Ref: apiGatewayLogicalId },
             DeploymentId: { Ref: Match.anyValue() },
-            StageName: "test"
+            StageName: "default"
         });
     });
 });
