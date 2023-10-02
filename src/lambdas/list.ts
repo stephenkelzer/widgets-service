@@ -1,5 +1,5 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResult } from 'aws-lambda'
-import { DynamoDB, QueryCommandInput, ScanCommandInput } from '@aws-sdk/client-dynamodb'
+import { APIGatewayProxyHandlerV2 } from 'aws-lambda'
+import { DynamoDB, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { Widget } from '../widget';
 
@@ -45,15 +45,13 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest)
 
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         }
     } catch (err) {
         console.error(err)
 
         return {
-            statusCode: 400,
-            headers: { 'Content-Type': 'application/json' },
+            statusCode: 500,
             body: JSON.stringify({ message: 'something went wrong' })
         }
     }

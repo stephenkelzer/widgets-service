@@ -52,6 +52,21 @@ export class WidgetsStack extends cdk.Stack {
     });
     dynamoTable.grantReadData(listLambda);
 
+    const getLambda = new cdkLambda.DockerImageFunction(this, 'GetWidgetLambda', {
+      description: "Get Widget Lambda",
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
+        buildArgs: {
+          FILE_PATH: "./src/lambdas/get.js"
+        },
+        platform: Platform.LINUX_AMD64
+      }),
+      architecture: cdkLambda.Architecture.X86_64,
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+    });
+    dynamoTable.grantReadData(getLambda);
+
     const apiGateway = new cdkApiGateway.RestApi(this, `${props.environment}-ApiGateway`, {
       defaultCorsPreflightOptions: {
         allowOrigins: cdkApiGateway.Cors.ALL_ORIGINS,
@@ -63,9 +78,9 @@ export class WidgetsStack extends cdk.Stack {
       deploy: true,
     });
 
-    const widgetApiEndpoint = apiGateway.root.addResource("widgets");
-    widgetApiEndpoint.addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
-    widgetApiEndpoint.addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
+    apiGateway.root.addResource("widgets").addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
+    apiGateway.root.addResource("widgets").addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
+    apiGateway.root.addResource("widgets/{id}").addMethod("GET", new cdkApiGateway.LambdaIntegration(getLambda));
 
     new cdk.CfnOutput(this, 'api_gateway_url', { value: apiGateway.url ?? "unknown" });
   }
