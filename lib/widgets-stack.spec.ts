@@ -11,51 +11,91 @@ describe('WidgetsStack', () => {
 
         const template = Template.fromStack(stack);
 
-        // console.log(JSON.stringify(template, undefined, 4));
+        console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "List Widgets Lambda",
+            Architectures: ["x86_64"],
+            PackageType: "Image",
             Code: {
-                "ImageUri": Match.objectLike({ "Fn::Sub": Match.anyValue() }),
+                ImageUri: Match.objectLike({ "Fn::Sub": Match.anyValue() }),
             },
             Environment: {
                 Variables: {
-                    "DYNAMO_TABLE_NAME": Match.anyValue()
+                    "DYNAMO_TABLE_NAME": {
+                        Ref: Match.anyValue()
+                    }
                 }
             }
         });
 
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "Create Widget Lambda",
+            Architectures: ["x86_64"],
+            PackageType: "Image",
             Code: {
-                "ImageUri": Match.objectLike({ "Fn::Sub": Match.anyValue() }),
+                ImageUri: Match.objectLike({ "Fn::Sub": Match.anyValue() }),
             },
             Environment: {
                 Variables: {
-                    "DYNAMO_TABLE_NAME": Match.anyValue()
+                    "DYNAMO_TABLE_NAME": {
+                        Ref: Match.anyValue()
+                    }
                 }
             }
         });
 
-        template.hasResourceProperties('AWS::ApiGatewayV2::Api', {
-            CorsConfiguration: {
-                AllowHeaders: [
-                    "Content-Type",
-                    "X-Amz-Date",
-                    "Authorization",
-                    "X-Api-Key",
-                    "X-Amz-Security-Token",
-                    "X-Amz-User-Agent"
+        template.hasResourceProperties('AWS::ApiGateway::RestApi', {
+            Name: "test-ApiGateway"
+        });
+        const apiGatewayLogicalId = Object.keys(template.findResources('AWS::ApiGateway::RestApi', {
+            Properties: {
+                Name: "test-ApiGateway"
+            }
+        }))[0];
+
+        template.hasResourceProperties('AWS::ApiGateway::Method', {
+            HttpMethod: "OPTIONS",
+            Integration: {
+                IntegrationResponses: [
+                    {
+                        ResponseParameters: {
+                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                            "method.response.header.Access-Control-Allow-Origin": "'*'",
+                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+                        },
+                        StatusCode: "204"
+                    }
                 ],
-                AllowMethods: ["*"],
-                AllowOrigins: ["*"]
+                RequestTemplates: {
+                    "application/json": "{ statusCode: 200 }"
+                },
+                Type: "MOCK"
             },
-            Name: "test-ApiGateway",
-            ProtocolType: "HTTP"
+            MethodResponses: [
+                {
+                    ResponseParameters: {
+                        "method.response.header.Access-Control-Allow-Headers": true,
+                        "method.response.header.Access-Control-Allow-Methods": true,
+                        "method.response.header.Access-Control-Allow-Origin": true
+                    },
+                    StatusCode: "204"
+                }
+            ],
+            ResourceId: {
+                "Fn::GetAtt": [
+                    apiGatewayLogicalId,
+                    "RootResourceId"
+                ]
+            },
+            RestApiId: {
+                Ref: apiGatewayLogicalId
+            }
         });
 
-        template.hasResourceProperties('AWS::ApiGatewayV2::Stage', {
-            AutoDeploy: true,
+        template.hasResourceProperties('AWS::ApiGateway::Stage', {
+            RestApiId: { Ref: apiGatewayLogicalId },
+            DeploymentId: { Ref: Match.anyValue() },
             StageName: "$default"
         });
     });

@@ -1,11 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import * as cdkApiGateway from 'aws-cdk-lib/aws-apigateway';
+import * as cdkDynamoDB from 'aws-cdk-lib/aws-dynamodb';
 import * as cdkLambda from 'aws-cdk-lib/aws-lambda';
-import * as cdkDynamoDb from 'aws-cdk-lib/aws-dynamodb';
-import * as cdkApiGatewayV2 from '@aws-cdk/aws-apigatewayv2-alpha';
-import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
-import { Cors } from 'aws-cdk-lib/aws-apigateway';
-import { CorsHttpMethod } from '@aws-cdk/aws-apigatewayv2-alpha';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 
 export interface WidgetsStackProps extends cdk.StackProps {
@@ -16,46 +13,16 @@ export class WidgetsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WidgetsStackProps) {
     super(scope, id, props);
 
-    const db = new cdkDynamoDb.Table(this, 'WidgetsDb', {
+    const dynamoTable = new cdkDynamoDB.Table(this, 'WidgetsDb', {
       tableName: 'widgets',
       partitionKey: {
         name: "id",
-        type: cdkDynamoDb.AttributeType.STRING
+        type: cdkDynamoDB.AttributeType.STRING
       },
-      billingMode: cdkDynamoDb.BillingMode.PAY_PER_REQUEST,
+      billingMode: cdkDynamoDB.BillingMode.PAY_PER_REQUEST,
     });
 
-    const apiGateway = new cdkApiGatewayV2.HttpApi(this, `${props.environment}-ApiGateway`, {
-      corsPreflight: {
-        allowOrigins: Cors.ALL_ORIGINS,
-        allowHeaders: Cors.DEFAULT_HEADERS,
-        allowMethods: [CorsHttpMethod.ANY],
-      },
-    });
-
-    const listWidgetsLambda = new cdkLambda.DockerImageFunction(this, "ListWidgetLambda", {
-      description: "List Widgets Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
-        buildArgs: {
-          FILE_PATH: "./src/lambdas/list.js"
-        },
-        platform: Platform.LINUX_AMD64
-      }),
-      architecture: cdkLambda.Architecture.X86_64,
-      environment: {
-        DYNAMO_TABLE_NAME: db.tableName,
-      },
-    });
-
-    db.grantReadData(listWidgetsLambda);
-
-    apiGateway.addRoutes({
-      path: '/widgets',
-      methods: [cdkApiGatewayV2.HttpMethod.GET],
-      integration: new HttpLambdaIntegration('list-widgets-integration', listWidgetsLambda),
-    });
-
-    const createWidgetLambda = new cdkLambda.DockerImageFunction(this, "CreateWidgetLambda", {
+    const createLambda = new cdkLambda.DockerImageFunction(this, 'CreateWidgetLambda', {
       description: "Create Widget Lambda",
       code: cdkLambda.DockerImageCode.fromImageAsset("./", {
         buildArgs: {
@@ -65,20 +32,42 @@ export class WidgetsStack extends cdk.Stack {
       }),
       architecture: cdkLambda.Architecture.X86_64,
       environment: {
-        DYNAMO_TABLE_NAME: db.tableName,
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
       },
     });
+    dynamoTable.grantReadWriteData(createLambda);
 
-    db.grantWriteData(createWidgetLambda);
+    const listLambda = new cdkLambda.DockerImageFunction(this, 'ListWidgetsLambda', {
+      description: "List Widgets Lambda",
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
+        buildArgs: {
+          FILE_PATH: "./src/lambdas/list.js"
+        },
+        platform: Platform.LINUX_AMD64
+      }),
+      architecture: cdkLambda.Architecture.X86_64,
+      environment: {
+        DYNAMO_TABLE_NAME: dynamoTable.tableName,
+      },
+    });
+    dynamoTable.grantReadData(listLambda);
 
-    apiGateway.addRoutes({
-      path: '/widgets',
-      methods: [cdkApiGatewayV2.HttpMethod.POST],
-      integration: new HttpLambdaIntegration('create-widget-integration', createWidgetLambda),
+    const apiGateway = new cdkApiGateway.RestApi(this, `${props.environment}-ApiGateway`, {
+      defaultCorsPreflightOptions: {
+        allowOrigins: cdkApiGateway.Cors.ALL_ORIGINS,
+        allowMethods: cdkApiGateway.Cors.ALL_METHODS,
+        allowHeaders: cdkApiGateway.Cors.DEFAULT_HEADERS,
+      },
+      deployOptions: {
+        stageName: "$default",
+      },
+      deploy: true,
     });
 
-    new cdk.CfnOutput(this, 'api_gateway_url', {
-      value: apiGateway.url ?? "unknown",
-    });
+    const widgetApiEndpoint = apiGateway.root.addResource("widgets");
+    widgetApiEndpoint.addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
+    widgetApiEndpoint.addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
+
+    new cdk.CfnOutput(this, 'api_gateway_url', { value: apiGateway.url ?? "unknown" });
   }
 }
