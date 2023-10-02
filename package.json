@@ -10,7 +10,7 @@
     "deploy": "cdk deploy --require-approval never",
     "prebuild": "rm -rf dist",
     "build": "webpack --mode=production",
-    "test": "jest"
+    "test": "tsc && jest"
   },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "2.99.1-alpha.0",
