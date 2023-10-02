@@ -15,11 +15,6 @@ export class WidgetsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WidgetsStackProps) {
     super(scope, id, props);
 
-    const nodeModulesLambdaLayer = new cdkLambda.LayerVersion(this, 'NodeModulesLambdaLayer', {
-      code: cdkLambda.Code.fromAsset('./dist/nodejs_layer.zip'),
-      compatibleRuntimes: [cdkLambda.Runtime.NODEJS_18_X]
-    });
-
     const db = new cdkDynamoDb.Table(this, 'WidgetsDb', {
       tableName: 'widgets',
       partitionKey: {
@@ -37,11 +32,9 @@ export class WidgetsStack extends cdk.Stack {
       },
     });
 
-    const listWidgetsLambda = new cdkLambda.Function(this, 'ListWidgetsLambda', {
-      code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'list-widgets-lambda.handler',
-      runtime: cdkLambda.Runtime.NODEJS_18_X,
-      layers: [nodeModulesLambdaLayer],
+    const listWidgetsLambda = new cdkLambda.DockerImageFunction(this, "ListWidgetLambda", {
+      description: "List Widgets Lambda",
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_NAME: "/dist/list.js" } }),
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
@@ -55,14 +48,12 @@ export class WidgetsStack extends cdk.Stack {
       integration: new HttpLambdaIntegration('list-widgets-integration', listWidgetsLambda),
     });
 
-    const createWidgetLambda = new cdkLambda.Function(this, 'CreateWidgetLambda', {
-      code: cdkLambda.Code.fromAsset('./dist'),
-      handler: 'create-widget-lambda.handler',
-      runtime: cdkLambda.Runtime.NODEJS_18_X,
-      layers: [nodeModulesLambdaLayer],
+    const createWidgetLambda = new cdkLambda.DockerImageFunction(this, "CreateWidgetLambda", {
+      description: "Create Widget Lambda",
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_NAME: "/dist/create.js" } }),
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
-      }
+      },
     });
 
     db.grantWriteData(createWidgetLambda);

@@ -25,16 +25,13 @@ jobs:
 
             -   name: Install Dependencies
                 run: npm ci
-
-            -   name: Build
-                run: npm run build
-
-            -   name: Build NodeModules Layer
-                run: npm prune --production && npm run build-node-modules-layer && npm ci
                 
             # TODO: This should get moved to a CI flow later
             -   name: Test
                 run: npm run test
+
+            -   name: Build
+                run: npm run build
 
             -   name: Configure AWS Credentials
                 uses: aws-actions/configure-aws-credentials@v4

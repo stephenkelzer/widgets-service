@@ -1,7 +1,7 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDB, QueryCommandInput, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
-import { Widget } from './widget';
+import { Widget } from '../widget';
 
 interface Response {
     items: Widget[],

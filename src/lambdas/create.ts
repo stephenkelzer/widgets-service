@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda'
-import { PendingWidget, Widget } from './widget';
+import { PendingWidget, Widget } from '../widget';
 import { DynamoDB, PutItemCommandInput } from '@aws-sdk/client-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
 import { marshall } from '@aws-sdk/util-dynamodb';

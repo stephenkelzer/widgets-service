@@ -14,22 +14,27 @@ describe('WidgetsStack', () => {
         // console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
+            Description: "List Widgets Lambda",
             Code: {
-                "S3Bucket": Match.anyValue(),
-                "S3Key": Match.anyValue()
+                "ImageUri": Match.objectLike({ "Fn::Sub": Match.anyValue() }),
             },
-            Handler: 'list-widgets-lambda.handler',
-            Runtime: 'nodejs18.x',
+            Environment: {
+                Variables: {
+                    "DYNAMO_TABLE_NAME": Match.anyValue()
+                }
+            }
         });
 
-
         template.hasResourceProperties('AWS::Lambda::Function', {
+            Description: "Create Widget Lambda",
             Code: {
-                "S3Bucket": Match.anyValue(),
-                "S3Key": Match.anyValue()
+                "ImageUri": Match.objectLike({ "Fn::Sub": Match.anyValue() }),
             },
-            Handler: 'create-widget-lambda.handler',
-            Runtime: 'nodejs18.x',
+            Environment: {
+                Variables: {
+                    "DYNAMO_TABLE_NAME": Match.anyValue()
+                }
+            }
         });
 
         template.hasResourceProperties('AWS::ApiGatewayV2::Api', {
