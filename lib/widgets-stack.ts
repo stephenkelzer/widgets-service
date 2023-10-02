@@ -34,7 +34,7 @@ export class WidgetsStack extends cdk.Stack {
 
     const listWidgetsLambda = new cdkLambda.DockerImageFunction(this, "ListWidgetLambda", {
       description: "List Widgets Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_NAME: "/dist/list.js" } }),
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_PATH: "/dist/list.js" } }),
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
@@ -50,7 +50,7 @@ export class WidgetsStack extends cdk.Stack {
 
     const createWidgetLambda = new cdkLambda.DockerImageFunction(this, "CreateWidgetLambda", {
       description: "Create Widget Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_NAME: "/dist/create.js" } }),
+      code: cdkLambda.DockerImageCode.fromImageAsset("./", { buildArgs: { FILE_PATH: "/dist/create.js" } }),
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
