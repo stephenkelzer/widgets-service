@@ -65,7 +65,7 @@ export class WidgetsStack extends cdk.Stack {
 
     const widgetApiEndpoint = apiGateway.root.addResource("widgets");
     widgetApiEndpoint.addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
-    widgetApiEndpoint.addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
+    widgetApiEndpoint.addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda, { proxy: false }));
 
     new cdk.CfnOutput(this, 'api_gateway_url', { value: apiGateway.url ?? "unknown" });
   }
