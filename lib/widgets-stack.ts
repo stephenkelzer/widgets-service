@@ -78,9 +78,11 @@ export class WidgetsStack extends cdk.Stack {
       deploy: true,
     });
 
-    apiGateway.root.addResource("widgets").addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
-    apiGateway.root.addResource("widgets").addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
-    apiGateway.root.addResource("widgets/{id}").addMethod("GET", new cdkApiGateway.LambdaIntegration(getLambda));
+    const widgetApiEndpoint = apiGateway.root.addResource("widgets");
+    widgetApiEndpoint.addMethod("GET", new cdkApiGateway.LambdaIntegration(listLambda));
+    widgetApiEndpoint.addMethod("POST", new cdkApiGateway.LambdaIntegration(createLambda));
+    const widgetApiEndpointId = widgetApiEndpoint.addResource("{id}");
+    widgetApiEndpointId.addMethod("GET", new cdkApiGateway.LambdaIntegration(getLambda));
 
     new cdk.CfnOutput(this, 'api_gateway_url', { value: apiGateway.url ?? "unknown" });
   }
