@@ -41,6 +41,7 @@ export class WidgetsStack extends cdk.Stack {
         },
         platform: Platform.LINUX_AMD64
       }),
+      architecture: cdkLambda.Architecture.X86_64,
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
@@ -62,6 +63,7 @@ export class WidgetsStack extends cdk.Stack {
         },
         platform: Platform.LINUX_AMD64
       }),
+      architecture: cdkLambda.Architecture.X86_64,
       environment: {
         DYNAMO_TABLE_NAME: db.tableName,
       },
