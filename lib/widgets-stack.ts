@@ -59,7 +59,7 @@ export class WidgetsStack extends cdk.Stack {
         allowHeaders: cdkApiGateway.Cors.DEFAULT_HEADERS,
       },
       deployOptions: {
-        stageName: "$default",
+        stageName: props.environment,
       },
       deploy: true,
     });

@@ -96,7 +96,7 @@ describe('WidgetsStack', () => {
         template.hasResourceProperties('AWS::ApiGateway::Stage', {
             RestApiId: { Ref: apiGatewayLogicalId },
             DeploymentId: { Ref: Match.anyValue() },
-            StageName: "$default"
+            StageName: "test"
         });
     });
 });
