@@ -7,7 +7,15 @@ describe('WidgetsStack', () => {
         const app = new cdk.App();
 
         // test should this stack name be used IN the stack? the lambda name doesn't include the stack name at all.... should it?
-        const stack = new WidgetsStack(app, 'TEST-Widgets', { environment: 'test' });
+        const stack = new WidgetsStack(app, 'TEST-Widgets', {
+            environment: 'test',
+            env: {
+                // these are here temporarily. I really feel like these shouldn't be checked in.
+                // I see lots of AWS documentation that says to check them in, but I don't like it.
+                account: "347554157673",
+                region: "us-west-2",
+            },
+        });
 
         const template = Template.fromStack(stack);
 
