@@ -37,7 +37,7 @@ export class WidgetsStack extends cdk.Stack {
       description: "List Widgets Lambda",
       code: cdkLambda.DockerImageCode.fromImageAsset("./", {
         buildArgs: {
-          FILE_PATH: "/dist/list.js"
+          FILE_PATH: "src/lambdas/list.js"
         },
         platform: Platform.LINUX_AMD64
       }),
@@ -59,7 +59,7 @@ export class WidgetsStack extends cdk.Stack {
       description: "Create Widget Lambda",
       code: cdkLambda.DockerImageCode.fromImageAsset("./", {
         buildArgs: {
-          FILE_PATH: "/dist/create.js"
+          FILE_PATH: "src/lambdas/create.js"
         },
         platform: Platform.LINUX_AMD64
       }),

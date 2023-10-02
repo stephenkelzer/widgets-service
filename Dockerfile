@@ -4,11 +4,10 @@ ARG FILE_PATH
 FROM public.ecr.aws/lambda/nodejs:18 as builder
 ARG FILE_PATH
 WORKDIR /usr/app
-COPY package.json $FILE_PATH  ./
-RUN npm ci
-RUN esbuild $FILE_PATH --bundle --minify --sourcemap --platform=node --target=es2020 --outdir=dist
+COPY . .
+RUN npm ci --production
+RUN npx -y esbuild@0.19.4 ${FILE_PATH} --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js
 
 FROM public.ecr.aws/lambda/nodejs:18
-ARG FILE_PATH
 COPY --from=builder /usr/app/dist/* ./
 CMD ["index.handler"]
