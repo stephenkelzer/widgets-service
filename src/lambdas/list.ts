@@ -1,4 +1,4 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDB, QueryCommandInput, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { Widget } from '../widget';
@@ -8,9 +8,9 @@ interface Response {
     nextCursor: string | null,
 }
 
-export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
+export const handler: APIGatewayProxyHandlerV2 = async (event, context, ...rest) => {
     try {
-        console.log('LIST Widgets', { event: JSON.stringify(event, null, 4) });
+        console.log('LIST Widgets', { event: JSON.stringify({ event, context, rest }, null, 4) });
 
         const pageSize = parseInt(event.queryStringParameters?.pageSize ?? '') || 10;
         const startId = event.queryStringParameters?.cursor;
