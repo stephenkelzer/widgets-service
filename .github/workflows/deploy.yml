@@ -56,11 +56,7 @@ jobs:
                     echo ${{ steps.cdk-deploy.outputs.gateway_url }}
 
             -   name: Save CDK Outputs to AWS Systems Manager Parameter Store
-                run: aws ssm put-parameter \
-                        --name /widgets/test \
-                        --value ${{ steps.cdk-deploy.outputs.gateway_url }} \
-                        --type String \
-                        --overwrite
+                run: aws ssm put-parameter --name /widgets/test --value ${{ steps.cdk-deploy.outputs.gateway_url }} --type String --overwrite
 
             -   name: Save Artifact
                 if: always()
