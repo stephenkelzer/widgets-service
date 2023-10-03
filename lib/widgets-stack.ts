@@ -102,6 +102,6 @@ export class WidgetsStack extends cdk.Stack {
       integration: new HttpLambdaIntegration('create-widget-integration', createLambda, { payloadFormatVersion: cdkApiGateway.PayloadFormatVersion.VERSION_2_0 }),
     });
 
-    new cdk.CfnOutput(this, 'api_gateway_url', { value: apiGateway.url ?? "unknown" });
+    new cdk.CfnOutput(this, 'GatewayUrl', { value: apiGateway.url ?? "unknown" });
   }
 }
