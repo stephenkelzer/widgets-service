@@ -44,13 +44,18 @@ jobs:
                 run: |
                     ENVIRONMENT=staging npx cdk deploy --require-approval never --outputs-file cdk.out.json
                     node --eval "console.log('::set-output name=gateway_url::' + require('./cdk.out.json')['staging-Widgets'].GatewayUrl)"
+                    node --eval "console.log("this_is_a_test=" + require('./cdk.out.json')['staging-Widgets'].GatewayUrl)" >> $GITHUB_OUTPUT
 
             -   name: SSM Outputs
-                run: echo ${{ steps.cdk-deploy.outputs.gateway_url }}
+                run: |
+                    echo ${{ steps.cdk-deploy.outputs.gateway_url }}
+                    echo ${{ steps.cdk-deploy.outputs.this_is_a_test }}
 
             -   name: Save Artifact
                 if: always()
                 uses: actions/upload-artifact@v3
                 with:
                     name: everything
-                    path: "**/*"
+                    path: |
+                        **/*
+                        !node_modules
