@@ -106,7 +106,19 @@ export class WidgetsStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'GatewayUrl', { value: apiGateway.url ?? "unknown" });
 
     if (apiGateway.url) {
-      new ssm.StringParameter(this, 'ssm_GatewayUrl', { parameterName: '/widgets/test', stringValue: apiGateway.url });
+      new ssm.StringParameter(this, 'ssm_GatewayUrl', {
+        parameterName: '/widgets/test',
+        stringValue: apiGateway.url,
+
+      });
     }
+
+    // Create a new SSM Parameter holding a String
+    new ssm.StringParameter(this, 'StringParameter', {
+      // description: 'Some user-friendly description',
+      // name: 'ParameterName',
+      stringValue: 'Initial parameter value',
+      // allowedPattern: '.*',
+    });
   }
 }
