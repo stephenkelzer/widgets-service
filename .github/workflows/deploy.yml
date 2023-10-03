@@ -43,7 +43,7 @@ jobs:
             -   name: CDK Deploy
                 id: cdk-deploy
                 run: |
-                    ENVIRONMENT=staging npm run deploy
+                    ENVIRONMENT=staging npm run deploy --outputs-file cdk.out.json
                     node --eval "console.log('::set-output name=gateway_url::' + require('./cdk.out.json')['staging-Widgets'].GatewayUrl)"
 
             -   name: SSM Outputs
