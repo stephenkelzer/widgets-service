@@ -84,6 +84,7 @@ export class WidgetsStack extends cdk.Stack {
       // add default 404 route?
     });
 
+
     apiGateway.addRoutes({
       path: '/widgets',
       methods: [cdkApiGateway.HttpMethod.GET],
@@ -103,5 +104,9 @@ export class WidgetsStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'GatewayUrl', { value: apiGateway.url ?? "unknown" });
+
+    if (apiGateway.url) {
+      new ssm.StringParameter(this, 'GatewayUrl', { parameterName: '/widgets/test', stringValue: apiGateway.url });
+    }
   }
 }
