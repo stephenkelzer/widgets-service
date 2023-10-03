@@ -42,6 +42,11 @@ jobs:
                 with:
                     version: 2
 
+            -   name: Bundle Lambdas
+                run: |
+                    chmod +x build.sh
+                    ./build.sh
+
             -   name: CDK Diff
                 run: ENVIRONMENT=staging npx cdk diff --require-approval never
 

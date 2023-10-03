@@ -19,15 +19,16 @@ describe('WidgetsStack', () => {
 
         const template = Template.fromStack(stack);
 
-        // console.log(JSON.stringify(template, undefined, 4));
+        console.log(JSON.stringify(template, undefined, 4));
 
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "List Widgets Lambda",
             Architectures: ["x86_64"],
-            PackageType: "Image",
             Code: {
-                ImageUri: Match.objectLike({ "Fn::Sub": Match.anyValue() }),
+                S3Bucket: Match.anyValue(),
+                S3Key: Match.anyValue(),
             },
+            Handler: "index.handler",
             Environment: {
                 Variables: {
                     "DYNAMO_TABLE_NAME": {
@@ -40,10 +41,28 @@ describe('WidgetsStack', () => {
         template.hasResourceProperties('AWS::Lambda::Function', {
             Description: "Create Widget Lambda",
             Architectures: ["x86_64"],
-            PackageType: "Image",
             Code: {
-                ImageUri: Match.objectLike({ "Fn::Sub": Match.anyValue() }),
+                S3Bucket: Match.anyValue(),
+                S3Key: Match.anyValue(),
             },
+            Handler: "index.handler",
+            Environment: {
+                Variables: {
+                    "DYNAMO_TABLE_NAME": {
+                        Ref: Match.anyValue()
+                    }
+                }
+            }
+        });
+
+        template.hasResourceProperties('AWS::Lambda::Function', {
+            Description: "Get Widget Lambda",
+            Architectures: ["x86_64"],
+            Code: {
+                S3Bucket: Match.anyValue(),
+                S3Key: Match.anyValue(),
+            },
+            Handler: "index.handler",
             Environment: {
                 Variables: {
                     "DYNAMO_TABLE_NAME": {

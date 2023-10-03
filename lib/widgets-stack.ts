@@ -24,14 +24,11 @@ export class WidgetsStack extends cdk.Stack {
       billingMode: cdkDynamoDB.BillingMode.PAY_PER_REQUEST,
     });
 
-    const createLambda = new cdkLambda.DockerImageFunction(this, 'CreateWidgetLambda', {
+    const createLambda = new cdkLambda.Function(this, 'CreateWidgetLambda', {
       description: "Create Widget Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
-        buildArgs: {
-          FILE_PATH: "./src/lambdas/create.js"
-        },
-        platform: Platform.LINUX_AMD64
-      }),
+      code: cdkLambda.AssetCode.fromAsset("./dist/create", { deployTime: true }),
+      handler: "index.handler",
+      runtime: cdkLambda.Runtime.NODEJS_18_X,
       architecture: cdkLambda.Architecture.X86_64,
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
@@ -39,14 +36,11 @@ export class WidgetsStack extends cdk.Stack {
     });
     dynamoTable.grantReadWriteData(createLambda);
 
-    const listLambda = new cdkLambda.DockerImageFunction(this, 'ListWidgetsLambda', {
+    const listLambda = new cdkLambda.Function(this, 'ListWidgetsLambda', {
       description: "List Widgets Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
-        buildArgs: {
-          FILE_PATH: "./src/lambdas/list.js"
-        },
-        platform: Platform.LINUX_AMD64
-      }),
+      code: cdkLambda.AssetCode.fromAsset("./dist/list", { deployTime: true }),
+      handler: "index.handler",
+      runtime: cdkLambda.Runtime.NODEJS_18_X,
       architecture: cdkLambda.Architecture.X86_64,
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,
@@ -54,14 +48,11 @@ export class WidgetsStack extends cdk.Stack {
     });
     dynamoTable.grantReadData(listLambda);
 
-    const getLambda = new cdkLambda.DockerImageFunction(this, 'GetWidgetLambda', {
+    const getLambda = new cdkLambda.Function(this, 'GetWidgetLambda', {
       description: "Get Widget Lambda",
-      code: cdkLambda.DockerImageCode.fromImageAsset("./", {
-        buildArgs: {
-          FILE_PATH: "./src/lambdas/get.js"
-        },
-        platform: Platform.LINUX_AMD64
-      }),
+      code: cdkLambda.AssetCode.fromAsset("./dist/get", { deployTime: true }),
+      handler: "index.handler",
+      runtime: cdkLambda.Runtime.NODEJS_18_X,
       architecture: cdkLambda.Architecture.X86_64,
       environment: {
         DYNAMO_TABLE_NAME: dynamoTable.tableName,

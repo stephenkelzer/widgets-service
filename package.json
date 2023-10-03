@@ -5,6 +5,9 @@
   "bin": {
     "app": "bin/app.js"
   },
+  "scripts": {
+    "test": "tsc && jest"
+  },
   "devDependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "2.99.1-alpha.0",
     "@aws-cdk/aws-apigatewayv2-integrations-alpha": "2.99.1-alpha.0",
