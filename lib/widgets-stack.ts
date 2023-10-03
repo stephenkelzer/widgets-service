@@ -112,13 +112,5 @@ export class WidgetsStack extends cdk.Stack {
 
       });
     }
-
-    // Create a new SSM Parameter holding a String
-    new ssm.StringParameter(this, 'StringParameter', {
-      // description: 'Some user-friendly description',
-      // name: 'ParameterName',
-      stringValue: 'Initial parameter value',
-      // allowedPattern: '.*',
-    });
   }
 }

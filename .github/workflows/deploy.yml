@@ -35,6 +35,12 @@ jobs:
                     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                     aws-region: ${{ vars.AWS_REGION }}
+            
+            -   name: Install AWS CLI
+                id: install-aws-cli
+                uses: unfor19/install-aws-cli-action@46282f151073130d90347412d9c4ef0640177f22
+                with:
+                    version: 2
 
             -   name: CDK Diff
                 run: ENVIRONMENT=staging npx cdk diff --require-approval never
@@ -45,9 +51,16 @@ jobs:
                     ENVIRONMENT=staging npx cdk deploy --require-approval never --outputs-file cdk.out.json
                     node --eval "console.log('gateway_url=' + require('./cdk.out.json')['staging-Widgets'].GatewayUrl)" >> $GITHUB_OUTPUT
 
-            -   name: SSM Outputs
+            -   name: Print CDK Outputs
                 run: |
                     echo ${{ steps.cdk-deploy.outputs.gateway_url }}
+
+            -   name: Save CDK Outputs to AWS Systems Manager Parameter Store
+                run: aws ssm put-parameter \
+                        --name /widgets/test \
+                        --value ${{ steps.cdk-deploy.outputs.gateway_url }} \
+                        --type String \
+                        --overwrite
 
             -   name: Save Artifact
                 if: always()
