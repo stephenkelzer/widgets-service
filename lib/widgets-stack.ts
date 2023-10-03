@@ -6,7 +6,6 @@ import * as cdkApiGateway from '@aws-cdk/aws-apigatewayv2-alpha';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 import { HttpLambdaIntegration } from '@aws-cdk/aws-apigatewayv2-integrations-alpha';
 import { Cors } from 'aws-cdk-lib/aws-apigateway';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 export interface WidgetsStackProps extends cdk.StackProps {
   environment: 'test' | 'local' | 'staging' | 'production';
@@ -15,10 +14,6 @@ export interface WidgetsStackProps extends cdk.StackProps {
 export class WidgetsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: WidgetsStackProps) {
     super(scope, id, props);
-
-    const test = ssm.StringParameter.valueFromLookup(this, '/widgets/test');
-    console.log(test)
-
 
     const dynamoTable = new cdkDynamoDB.Table(this, 'WidgetsDb', {
       tableName: 'widgets',
@@ -104,13 +99,5 @@ export class WidgetsStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'GatewayUrl', { value: apiGateway.url ?? "unknown" });
-
-    if (apiGateway.url) {
-      new ssm.StringParameter(this, 'ssm_GatewayUrl', {
-        parameterName: '/widgets/test',
-        stringValue: apiGateway.url,
-
-      });
-    }
   }
 }
